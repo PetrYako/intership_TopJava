@@ -11,11 +11,12 @@
 </head>
 <body>
 <table border="1" bgcolor="#FFCC66" align="center" width="1100px">
-    <caption>Meals</caption>
+    <caption>Meal</caption>
     <tr>
-        <th>Дата/Время</th>
-        <th>Описание</th>
-        <th>Калории</th>
+        <th>Date/Time</th>
+        <th>Description</th>
+        <th>Calories</th>
+        <th colspan="2">Action</th>
     </tr>
     <c:forEach items="${meals}" var="meal">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo" />
@@ -23,8 +24,11 @@
             <td><%=meal.getDateTime().format(format)%></td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
+            <td><a href="meals?action=edit&mealId=<c:out value="${meal.id}"/>">Edit</a></td>
+            <td><a href="meals?action=delete&mealId=<c:out value="${meal.id}" />">Delete</a> </td>
         </tr>
     </c:forEach>
+    <th><a href="meals?action=create">Create</a></th>
 </table>
 </body>
 </html>

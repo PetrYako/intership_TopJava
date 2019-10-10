@@ -4,22 +4,15 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.stream.Collector;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
 public class MealsUtil {
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public static List<MealTo> getMealWithoutFilter(List<Meal> meals, int caloriesPerDay) {
         return meals.stream()
@@ -46,10 +39,6 @@ public class MealsUtil {
         return meals.stream()
                 .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
-    }
-
-    public static String getFormatDate(LocalDateTime dateTime) {
-        return formatter.format(dateTime);
     }
 
     private static MealTo createTo(Meal meal, boolean excess) {

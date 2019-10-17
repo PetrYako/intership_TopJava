@@ -16,24 +16,26 @@ import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
-    private Map<Integer, List<Meal>> repository = new ConcurrentHashMap<>();
+    private Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach((m) -> save(0, m));
+        MealsUtil.MEALS.forEach(meal -> save(1, meal));
     }
 
     @Override
     public Meal save(int userId, Meal meal) {
-        if (!repository.containsKey(userId)) return null;
+        if (!repository.containsKey(userId)) {
+            repository.put(userId, new HashMap<>());
+        }
 
         if (meal.isNew()) {
-            meal.setId(counter.incrementAndGet());
-            repository.get(userId).add(meal);
+            meal.setId(counter.getAndIncrement());
+            repository.get(userId).put(meal.getId(), meal);
             return meal;
         }
         // treat case: update, but not present in storage
-        return repository.get(userId).set(meal.getId(), meal);
+        return repository.get(userId).computeIfPresent(meal.getId(), (integer, meal1) -> meal);
     }
 
     @Override
@@ -50,13 +52,13 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getUserMeal(int id) {
-        return repository.get(id);
+        return (List<Meal>) repository.get(id).values();
     }
 
     @Override
     public Collection<Meal> getAll() {
         Collection<Meal> meals  = new ArrayList<>();
-        repository.forEach((id, list) -> meals.addAll(list));
+        repository.forEach((id, map) -> meals.addAll(map.values()));
         return meals.stream()
                 .sorted(Comparator.comparing(Meal::getDate).reversed())
                 .collect(Collectors.toList());
@@ -64,7 +66,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getMealFilteredByDate(int userId, LocalDateTime startTime, LocalDateTime endTime) {
-        return repository.get(userId).stream()
+        return getAll().stream()
                 .filter((m) -> DateTimeUtil.isBetweenTime(m.getDateTime(), startTime, endTime))
                 .collect(Collectors.toList());
     }

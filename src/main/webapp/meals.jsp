@@ -1,3 +1,4 @@
+<%@ page import="ru.javawebinar.topjava.web.SecurityUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -14,6 +15,15 @@
         .excess {
             color: red;
         }
+
+        .disabled {
+            pointer-events: none;
+        }
+
+        .enabled {
+            pointer-events: all;
+        }
+
     </style>
 </head>
 <body>
@@ -21,7 +31,14 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
-    <a href="meals?action=create">Add Meal</a>
+    <a href="meals?action=create">Add Meal</a><br>
+    <form method="get" action="meals">
+        <input type="hidden" name="action" value="filter">
+        <p>From Date: <input type="datetime-local" name="fromDate" required>
+            To Date: <input type="datetime-local" name="toDate"  required></p><br>
+        <button type="submit">Filter</button>
+        <button onclick="window.history.back()" type="button">Cancel</button>
+    </form>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -44,8 +61,8 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="meals?action=update&id=${meal.id}">Update</a></td>
-                <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>
+                <td><a href="meals?action=update&id=${meal.id}" class=<%=SecurityUtil.authUserId() == meal.getUserId() ? "enabled" : "disabled"%>>Update</a></td>
+                <td><a href="meals?action=delete&id=${meal.id}" class=<%=SecurityUtil.authUserId() == meal.getUserId() ? "enabled" : "disabled"%>>Delete</a></td>
             </tr>
         </c:forEach>
     </table>

@@ -4,7 +4,6 @@ DROP TABLE IF EXISTS users;
 DROP SEQUENCE IF EXISTS global_seq;
 
 CREATE SEQUENCE global_seq START      WITH 100000;
-CREATE SEQUENCE global_meal_seq START WITH 100000;
 
 CREATE TABLE users
 (
@@ -28,7 +27,7 @@ CREATE TABLE user_roles
 
 CREATE TABLE meals
 (
-  id          INTEGER PRIMARY KEY DEFAULT nextval('global_meal_seq'),
+  id          INTEGER PRIMARY KEY,
   user_id     INTEGER    NOT NULL,
   dateTime    TIMESTAMP  NOT NULL,
   description VARCHAR    NOT NULL,

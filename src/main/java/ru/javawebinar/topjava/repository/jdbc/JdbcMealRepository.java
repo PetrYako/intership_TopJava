@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class JdbcMealRepository implements MealRepository {
         } else {
             if (namedParameterJdbcTemplate.update("" +
                             "UPDATE meals " +
-                            "   SET description=:description, calories=:calories, datetime=:date_time " +
+                            "   SET description=:description, calories=:calories, date_time=:date_time " +
                             " WHERE id=:id AND user_id=:user_id"
                     , map) == 0) {
                 return null;
@@ -75,13 +76,13 @@ public class JdbcMealRepository implements MealRepository {
     @Override
     public List<Meal> getAll(int userId) {
         return jdbcTemplate.query(
-                "SELECT * FROM meals WHERE user_id=? ORDER BY datetime DESC", ROW_MAPPER, userId);
+                "SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId);
     }
 
     @Override
-    public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
+    public List<Meal> getBetweenInclusive(LocalDate startDate, LocalDate endDate, int userId) {
         return jdbcTemplate.query(
-                "SELECT * FROM meals WHERE user_id=?  AND datetime BETWEEN  ? AND ? ORDER BY datetime DESC",
-                ROW_MAPPER, userId, startDate, endDate);
-    }
+                "SELECT * FROM meals WHERE user_id=?  AND date_time BETWEEN  ? AND ? ORDER BY date_time DESC",
+                ROW_MAPPER, userId, startDate, endDate);    }
+
 }

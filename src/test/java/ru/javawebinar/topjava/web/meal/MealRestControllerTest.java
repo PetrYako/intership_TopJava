@@ -75,7 +75,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.writeValue(updated)))
-                        .andExpect(status().isOk());
+                        .andExpect(status().isCreated());
 
         assertMatch(mealService.get(MEAL1_ID, UserTestData.USER_ID), updated);
     }

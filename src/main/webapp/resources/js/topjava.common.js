@@ -17,6 +17,17 @@ function makeEditable(ctx) {
     $.ajaxSetup({cache: false});
 }
 
+function filter() {
+    $.ajax({
+        type: "GET",
+        url: context.ajaxUrl,
+        data: form.serialize()
+    }).done(function () {
+        updateTable();
+        successNoty("Filtered");
+    })
+}
+
 function add() {
     form.find(":input").val("");
     $("#editRow").modal();

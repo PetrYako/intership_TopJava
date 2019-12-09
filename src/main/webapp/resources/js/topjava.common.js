@@ -18,19 +18,29 @@ function makeEditable(ctx) {
 }
 
 function filter() {
-    $.ajax({
-        type: "GET",
-        url: context.ajaxUrl,
-        data: form.serialize()
-    }).done(function () {
-        updateTable();
+   $.ajax({
+       type: "GET",
+       url: context.ajaxUrl + "filter",
+       data: $("#filterForm").serialize()
+   }).done(function (data) {
+       context.datatableApi.clear().rows.add(data).draw();
         successNoty("Filtered");
-    })
+   })
 }
 
 function add() {
     form.find(":input").val("");
     $("#editRow").modal();
+}
+
+function changeState(id) {
+    $.ajax({
+        url: context.ajaxUrl + "changeState/" + id,
+        type: "POST"
+    }).done(function () {
+        updateTable();
+        successNoty("State changed");
+    })
 }
 
 function deleteRow(id) {

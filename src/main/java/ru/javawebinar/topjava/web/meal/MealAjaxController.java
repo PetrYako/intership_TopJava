@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ajax/meals/")
+@RequestMapping("/ajax/profile/meals")
 public class MealAjaxController extends AbstractMealController {
 
     @Override
@@ -38,21 +38,21 @@ public class MealAjaxController extends AbstractMealController {
     public void createOrUpdate(@RequestParam Integer id,
                                @RequestParam String description,
                                @RequestParam Integer calories,
-                               @RequestParam LocalDateTime localDateTime) {
+                               @RequestParam LocalDateTime dateTime) {
 
-        Meal meal = new Meal(id, localDateTime, description, calories);
+        Meal meal = new Meal(id, dateTime, description, calories);
         if (meal.isNew()) {
             super.create(meal);
         }
     }
+
+    @Override
+    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MealTo> getBetween(@RequestParam LocalDate startDate,
+                                   @RequestParam LocalTime startTime,
+                                   @RequestParam LocalDate endDate,
+                                   @RequestParam LocalTime endTime) {
+
+        return super.getBetween(startDate, startTime, endDate, endTime);
+    }
 }
-//    @Override
-//    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-//    public List<MealTo> getBetween(@RequestParam LocalDate startDate,
-//                                   @RequestParam LocalTime startTime,
-//                                   @RequestParam LocalDate endDate,
-//                                   @RequestParam LocalTime endTime) {
-//
-//        return super.getBetween(startDate, startTime, endDate, endTime);
-//    }
-//}

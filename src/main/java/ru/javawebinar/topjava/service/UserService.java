@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
@@ -28,7 +29,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository repository;
 
     @Autowired
-    public UserService(UserRepository repository) {
+    public UserService(@Qualifier("dataJpaUserRepository") UserRepository repository) {
         this.repository = repository;
     }
 

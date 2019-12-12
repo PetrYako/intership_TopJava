@@ -1,48 +1,73 @@
+var mealsAjaxUrl = "ajax/profile/meals/";
+
 function updateFilteredTable() {
     $.ajax({
         type: "GET",
-        url: "ajax/profile/meals/filter",
-        data: $("#filter").serialize()
+        url: mealsAjaxUrl + "filter",
+        data: $('#filter').serialize()
     }).done(updateTableByData);
 }
 
-function clearFilter() {
-    $("#filter")[0].reset();
-    $.get("ajax/profile/meals/", updateTableByData);
+function cancelFilter() {
+    $.ajax({
+        type: "GET",
+        url: mealsAjaxUrl,
+    }).done(updateTableByData);
 }
 
 $(function () {
     makeEditable({
-        ajaxUrl: "ajax/profile/meals/",
-        datatableApi: $("#datatable").DataTable({
-            "paging": false,
-            "info": true,
-            "columns": [
-                {
-                    "data": "dateTime"
+            ajaxUrl: mealsAjaxUrl,
+            datatableApi: $('#datatable').DataTable({
+                "ajax": {
+                    "url": mealsAjaxUrl,
+                    "dataSrc": ""
                 },
-                {
-                    "data": "description"
-                },
-                {
-                    "data": "calories"
-                },
-                {
-                    "defaultContent": "Edit",
-                    "orderable": false
-                },
-                {
-                    "defaultContent": "Delete",
-                    "orderable": false
+                "paging": false,
+                "info": true,
+                "columns": [
+                    {
+                        "data": "dateTime",
+                        "render": function (data) {
+                           return data.replace("T", " ");
+                        }
+                    },
+                    {
+                        "data": "description"
+                    },
+                    {
+                        "data": "calories",
+                    },
+                    {
+                        "oderable": false,
+                        "defaultContent": "",
+                        "render": renderEditBtn
+                    },
+                    {
+                        "oderable": false,
+                        "defaultContent": "",
+                        "render": renderDeleteBtn
+                    },
+                    {
+                        "data": "excess",
+                        "visible": false
+                    }
+                ],
+                "order": [
+                    [
+                        0,
+                        "desc"
+                    ]
+                ],
+                "createdRow": function (row, data, dataIndex) {
+                    if (data.excess) {
+                        $(row).attr("data-mealExcess", true);
+                    } else {
+                        $(row).attr("data-mealExcess", false);
+                    }
                 }
-            ],
-            "order": [
-                [
-                    0,
-                    "desc"
-                ]
-            ]
-        }),
-        updateTable: updateFilteredTable
-    });
+            }),
+            updateTable: updateFilteredTable
+        }
+    );
 });

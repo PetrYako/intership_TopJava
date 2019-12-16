@@ -24,7 +24,7 @@ public class DateTimeUtil {
     }
 
     public static @Nullable LocalDate parseLocalDate(@Nullable String str) {
-        return StringUtils.isEmpty(str) ? null : LocalDate.parse(str);
+        return StringUtils.isEmpty(str) ? null : LocalDate.parse(str, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
 
     public static @Nullable LocalTime parseLocalTime(@Nullable String str) {
